@@ -1,0 +1,101 @@
+---
+title: "География телеграмм"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+### Место отправления
+
+На этой карте показываются точки, откуда были отправлены телеграммы в нашем датасете. Легенда - тон телеграмм.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(leaflet)
+library(leafsync)
+
+telegrams <- read_csv("all_telegrams.csv")
+
+pal_cat <- colorFactor("Spectral", domain = telegrams$sentiment)
+pal_cat(telegrams$sentiment[1])
+
+telegrams %>%
+  leaflet() %>%
+  addTiles() %>% 
+  addCircles(lat = ~sent_lat,
+             lng = ~sent_lon,
+             label = ~sending_place,
+             color  = ~pal_cat(sentiment),
+             opacity = 0.9,
+             popup = ~sending_place) %>%
+  addLegend(pal = pal_cat,
+            values = ~sentiment,
+            title = "")
+```
+
+### Место получения
+
+А этой карте показываются точки, где были получены телеграммы в нашем датасете. Легенда - тон телеграмм.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(leaflet)
+library(leafsync)
+
+telegrams %>%
+  leaflet() %>%
+  addTiles() %>% 
+  addCircles(lat = ~received_lat,
+             lng = ~received_lon,
+             label = ~receiving_place,
+             color  = ~pal_cat(sentiment),
+             opacity = 0.9,
+             popup = ~receiving_place) %>%
+  addLegend(pal = pal_cat,
+            values = ~sentiment,
+            title = "")
+```
+
+### Место отправления и получения (синхронизированные карты)
+
+Это те же самые карты, просто их можно смотреть одновременно, сопоставляя точки.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(leaflet)
+library(leafsync)
+
+telegrams <- read_csv("all_telegrams.csv")
+
+pal_cat <- colorFactor("Spectral", domain = telegrams$sentiment)
+pal_cat(telegrams$sentiment[1])
+
+telegrams %>%
+  leaflet() %>%
+  addTiles() %>% 
+  addCircles(lat = ~sent_lat,
+             lng = ~sent_lon,
+             label = ~sending_place,
+             color  = ~pal_cat(sentiment),
+             opacity = 0.9,
+             popup = ~sending_place) %>%
+  addLegend(pal = pal_cat,
+            values = ~sentiment,
+            title = "") ->
+  map_sent
+
+telegrams %>%
+  leaflet() %>%
+  addTiles() %>% 
+  addCircles(lat = ~received_lat,
+             lng = ~received_lon,
+             label = ~receiving_place,
+             color  = ~pal_cat(sentiment),
+             opacity = 0.9,
+             popup = ~receiving_place) %>%
+  addLegend(pal = pal_cat,
+            values = ~sentiment,
+            title = "") ->
+  map_received
+
+sync(map_sent, map_received)
+```
