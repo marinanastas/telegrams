@@ -1,2 +1,18 @@
-# Telegrams
-a repo for our university project "digitization and analysis of russian-language telegrams"
+# Оцифровка и анализ русскоязычных телеграмм
+## Совместный проект Центра цифровых гуманитарных наук НИУ ВШЭ и проекта "Пишу тебе"
+
+Навигация по репозиторию:
+-------------------------
+### code
+
+### datasets
+
+### downloading_images
+
+### geography
+
+### graphs
+
+### preparing_dataset
+
+### Инструкция по разметке телеграм
